@@ -1,0 +1,101 @@
+
+public class Method {
+	
+	private static double x[] = Main.x;
+	private static double y[] = Main.y;
+	private static double h = Main.h;
+	private static int n = Main.x.length;
+	
+	
+		private static double fi_1(int i) {
+			return (y[i+1] - y[i-1])/(2*h);
+		}
+		
+		private static double f22() { 
+			return (y[0] + y[2] - 2*y[1])/Math.pow(h,2);  
+		}
+		
+		private static double f12() { 
+				return fi_1(1) - f22()*h; 
+		}
+		
+		private static double fn2() { 
+				return (y[n-3] + y[n-1] - 2*y[n-2])/Math.pow(h,2);  
+		}		
+		
+		private static double f1n() { 
+				return fi_1(n-2) - fn2()*h;  
+		}	
+		
+		private static double c(int i) {
+			double cc=0;
+			if(i >= 1 && i < n-2) cc = fi_1(i); 
+			if(i == 0 ) cc = f12();  
+			if(i == n-2 )  cc = fi_1(n-2);
+			return cc;
+		}
+			
+		private static double a(int i) {
+			double aa = 0;					
+				if(i >= 1 && i < n-2) aa = ((x[i+1]-x[i])*(fi_1(i+1)-fi_1(i))-2*(y[i+1] - fi_1(i)*(x[i+1]-x[i]) - y[i]))/Math.pow(x[i+1]-x[i],3);
+				if(i == 0) aa = ((x[1]-x[0])*(fi_1(1)-f12()) - 2*(y[1]-f12()*(x[1]-x[0]) - y[0]))/Math.pow(x[1]-x[0],3);
+				if(i == n-2) aa = (h*(f1n()-fi_1(n-2)) - 2*(y[n-1] - fi_1(n-2)*h- y[n-2]))/Math.pow(h,3);
+				return aa;
+		}
+			
+		private static double b(int i) {
+			double bb = 0;
+		
+				if(i >= 1 && i < n-2)
+					bb = (3*(y[i+1] - fi_1(i)*h - y[i])-h*(fi_1(i+1)-fi_1(i)))/Math.pow(h,2);
+				if (i == 0) 
+					bb = (3*(y[1] - f12()*h - y[0])- h*(fi_1(1)-f12()))/Math.pow(h,2);
+				if (i == n-2) 
+					bb = (3*(y[n-1] - fi_1(n-2)*h-y[n-2])- h*(f1n()-fi_1(n-2)))/Math.pow(h,2);
+				return bb;
+			}
+					
+		
+		
+		public static double k_spl(double xx)  {
+				double spl = 0;
+				int it = 0;
+				double d = 0;
+				for (int j = 0;j < n-1;j++) {
+				if(xx > x[j] && xx < x[j+1]) it = j;	
+				}
+				d = y[it];
+				spl = a(it)*Math.pow(xx-x[it],3) +
+						b(it)*Math.pow(xx-x[it],2)+
+				            c(it)*(xx-x[it]) + d;
+				return spl;
+			}
+	
+	
+		public static double kvad(double xx)
+		{
+			double a=0,b=0,c=0;
+			for (int i = 1; i < x.length-2; i++) {
+				if((xx <= x[i+1]) && (xx >= x[i])) {
+					a=((y[i+2]-y[i])*(x[i+1]-x[i])-(y[i+1]-y[i])*(x[i+2]-x[i]))/((Math.pow(x[i+2],2)-Math.pow(x[i],2))*(x[i+1]-x[i])-(Math.pow(x[i+1],2)-Math.pow(x[i],2))*(x[i+2]-x[i]));
+					b=(y[i+1]-y[i]-a*(Math.pow(x[i+1],2)-Math.pow(x[i],2)))/(x[i+1]-x[i]);
+					c=y[i]-(a*Math.pow(x[i],2)+b*x[i]);
+				}
+			}
+			return a*Math.pow(xx,2)+b*xx+c;
+		}
+		
+		public static double lin(double xx)
+		{
+			double a=0,b=0;
+			for (int i = 0; i < x.length-2; i++) {
+				if((xx < x[i+1]) && (xx > x[i])) {
+					a= (y[i+1]-y[i])/(x[i+1]-x[i]);
+					b= y[i]-x[i]*a;
+				}
+			}
+			return a*xx + b;
+		}
+
+
+}
